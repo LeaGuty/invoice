@@ -94,7 +94,6 @@ public class InvoiceServiceImpl implements IInvoiceService {
 
     @Override
     @Transactional
-    @RabbitListener(queues = RabbitMQConfig.MAIN_QUEUE) // MODIFICADO: Apuntar directamente a la constante de la cola principal
     public void uploadInvoiceToS3(String invoiceId) throws IOException {
         // Lógica para simular un error para pruebas de la Cola de Carta Muerta (DLQ)
         if (invoiceId.startsWith("test-dlq-")) {
