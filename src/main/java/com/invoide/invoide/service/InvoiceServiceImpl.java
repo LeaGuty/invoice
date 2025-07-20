@@ -71,7 +71,7 @@ public class InvoiceServiceImpl implements IInvoiceService {
 
         Path efsPath = Paths.get(efsMountPath, savedInvoice.getId() + ".pdf");
         Files.createDirectories(efsPath.getParent());
-
+        /* 
         // --- INICIO DE LA MODIFICACIÓN CON ITEXT ---
         PdfWriter writer = new PdfWriter(new FileOutputStream(efsPath.toFile()));
         PdfDocument pdf = new PdfDocument(writer);
@@ -82,7 +82,7 @@ public class InvoiceServiceImpl implements IInvoiceService {
 
         document.close();
         // --- FIN DE LA MODIFICACIÓN CON ITEXT ---
-
+        */
         savedInvoice.setLocalEfsPath(efsPath.toString());
         savedInvoice.setUploadedToS3(false);
 
@@ -92,42 +92,7 @@ public class InvoiceServiceImpl implements IInvoiceService {
 
         return finalInvoice;
     }
-/* 
-    @Override
-    @Transactional
-    @RabbitListener(queues = RabbitMQConfig.MAIN_QUEUE) // MODIFICADO: Apuntar directamente a la constante de la cola principal
-    public void uploadInvoiceToS3(String invoiceId) throws IOException {
-        // Lógica para simular un error para pruebas de la Cola de Carta Muerta (DLQ)
-        if (invoiceId.startsWith("test-dlq-")) {
-            System.out.println("Simulando error para ID: " + invoiceId + ". Este mensaje irá a la DLQ.");
-            throw new RuntimeException("Error simulado para pruebas de DLQ.");
-        }
-        
-        Invoice invoice = findInvoiceById(invoiceId);
 
-        // Verificación para evitar la subida duplicada a S3 si ya fue subida
-        if (invoice.isUploadedToS3()) {
-            System.out.println("Factura " + invoiceId + " ya ha sido subida a S3. Saltando procesamiento.");
-            
-        }
-
-        String s3Key = String.format("%s/%s/%s",
-                invoice.getCustomerId(),
-                invoice.getCreationDate().format(DateTimeFormatter.ofPattern("yyyy-MM")),
-                invoice.getId() + ".pdf");
-
-        PutObjectRequest request = PutObjectRequest.builder().bucket(bucketName).key(s3Key).build();
-        s3Client.putObject(request, RequestBody.fromFile(Paths.get(invoice.getLocalEfsPath())));
-
-        invoice.setS3Key(s3Key);
-        invoice.setUploadedToS3(true);
-        Files.delete(Paths.get(invoice.getLocalEfsPath()));
-        invoice.setLocalEfsPath(null);
-        invoiceRepository.save(invoice);
-        System.out.println("Factura " + invoiceId + " subida a S3 correctamente.");
-        
-    }
-*/
     @Override
     public byte[] downloadInvoice(String invoiceId) {
         Invoice invoice = findInvoiceById(invoiceId);
