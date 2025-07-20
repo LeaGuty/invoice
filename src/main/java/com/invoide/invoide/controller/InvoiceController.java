@@ -37,15 +37,15 @@ public class InvoiceController {
         return new ResponseEntity<>(invoice, HttpStatus.CREATED);
     }
 
-    /**
+    /*
      * Sube una factura generada desde EFS a S3.
-     */
+     
     @PostMapping("/{invoiceId}/upload")
     public ResponseEntity<Void> uploadInvoiceToS3(@PathVariable String invoiceId) throws IOException {
         invoiceService.uploadInvoiceToS3(invoiceId); // Ahora solo se llama al método
         return ResponseEntity.ok().build(); // Se devuelve una respuesta 200 OK vacía
     }
-    
+    */
     /**
      * Descarga una factura desde S3.
      */

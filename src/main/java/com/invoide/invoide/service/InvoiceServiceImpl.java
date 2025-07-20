@@ -65,6 +65,7 @@ public class InvoiceServiceImpl implements IInvoiceService {
         Invoice invoice = new Invoice();
         invoice.setCustomerId(customerId);
         invoice.setCreationDate(LocalDate.now());
+        invoice.setContent(content);
 
         Invoice savedInvoice = invoiceRepository.save(invoice);
 
@@ -91,16 +92,17 @@ public class InvoiceServiceImpl implements IInvoiceService {
 
         return finalInvoice;
     }
-
+/* 
     @Override
     @Transactional
+    @RabbitListener(queues = RabbitMQConfig.MAIN_QUEUE) // MODIFICADO: Apuntar directamente a la constante de la cola principal
     public void uploadInvoiceToS3(String invoiceId) throws IOException {
         // Lógica para simular un error para pruebas de la Cola de Carta Muerta (DLQ)
         if (invoiceId.startsWith("test-dlq-")) {
             System.out.println("Simulando error para ID: " + invoiceId + ". Este mensaje irá a la DLQ.");
             throw new RuntimeException("Error simulado para pruebas de DLQ.");
         }
-
+        
         Invoice invoice = findInvoiceById(invoiceId);
 
         // Verificación para evitar la subida duplicada a S3 si ya fue subida
@@ -125,7 +127,7 @@ public class InvoiceServiceImpl implements IInvoiceService {
         System.out.println("Factura " + invoiceId + " subida a S3 correctamente.");
         
     }
-
+*/
     @Override
     public byte[] downloadInvoice(String invoiceId) {
         Invoice invoice = findInvoiceById(invoiceId);
